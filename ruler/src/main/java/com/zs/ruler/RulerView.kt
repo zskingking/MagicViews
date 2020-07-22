@@ -5,13 +5,11 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.widget.OverScroller
 import androidx.core.content.ContextCompat
-import androidx.core.view.GestureDetectorCompat
 import com.zs.base.common.dip2px
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
@@ -20,7 +18,7 @@ import kotlin.math.roundToInt
  * @author zs
  */
 class RulerView(context: Context, attrs: AttributeSet) :
-    View(context, attrs), GestureDetector.OnGestureListener {
+    View(context, attrs) {
 
     /**
      * 画笔
@@ -58,9 +56,25 @@ class RulerView(context: Context, attrs: AttributeSet) :
     private var maxScale = 200
 
     /**
-     * 用作手势监听
+     * 速度采集器
      */
-    private var gestureDetector = GestureDetectorCompat(context, this)
+    private var velocityTracker: VelocityTracker? = null
+
+    /**
+     * 最大滑动速度
+     */
+    private val maxVelocity by lazy {
+        ViewConfiguration.get(context)
+            .scaledMaximumFlingVelocity
+    }
+
+    /**
+     * 最小滑动速度，低于时不滑动
+     */
+    private val minVelocity by lazy {
+        ViewConfiguration.get(context)
+            .scaledMinimumFlingVelocity
+    }
 
     /**
      * 滑动帮助类
@@ -83,12 +97,12 @@ class RulerView(context: Context, attrs: AttributeSet) :
     private var maxScrollX = 0
 
     /**
-     * 当前偏移量
+     * 当前偏移量。不能直接用scrollX，因为scrollX是int类型，会导致精度丢失
      */
     private var currentScrollX = 0f
 
     /**
-     *  初始化
+     * 初始化
      */
     init {
         //去除锯齿
@@ -109,9 +123,6 @@ class RulerView(context: Context, attrs: AttributeSet) :
         minScrollX = -allowOffsetX
         //最大滚动距离,刻度数 * 间隔 - width + allowOffsetX
         maxScrollX = maxScale * scaleInterval - width + allowOffsetX
-
-        Log.i("RulerView", "minScrollX::${minScrollX}")
-        Log.i("RulerView", "maxScrollX::${maxScrollX}")
 
     }
 
@@ -144,71 +155,96 @@ class RulerView(context: Context, attrs: AttributeSet) :
                     drawX, scaleHeight.toFloat(), paint
                 )
             }
-
         }
     }
 
+    /**
+     * 记录上一次move时的坐标，用于计算每次move的差量
+     */
+    private var lastX = 0
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        Log.i("RulerView", "event::${event.x}")
-        //通过gestureDetector接管MotionEvent事件
-        return gestureDetector.onTouchEvent(event)
+        //开始速度检测,每个事件序列创建一个
+        if (velocityTracker == null) {
+            velocityTracker = VelocityTracker.obtain()
+        }
+        velocityTracker?.addMovement(event)
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                lastX = event.x.toInt()
+                //停止scroller
+                if (!scroller.isFinished) {
+                    scroller.abortAnimation()
+                }
+                //按下时通知父View不要对事件进行拦截
+                parent.requestDisallowInterceptTouchEvent(true)
+            }
+            MotionEvent.ACTION_MOVE -> {
+                currentScrollX -= (event.x - lastX)
+                //超出最大滑动范围
+                if (currentScrollX > maxScrollX) {
+                    currentScrollX = maxScrollX.toFloat()
+                }
+                //超出最小滑动范围
+                if (currentScrollX < minScrollX) {
+                    currentScrollX = minScrollX.toFloat()
+                }
+                scrollTo(currentScrollX.roundToInt(), 0)
+                //记录当前坐标
+                lastX = event.x.toInt()
+                postInvalidate()
+            }
+            MotionEvent.ACTION_UP -> {
+                velocityTracker?.computeCurrentVelocity(1000, maxVelocity.toFloat())
+                val velocityX = velocityTracker!!.xVelocity.toInt()
+                //大于可滑动速度
+                if (abs(velocityX) > minVelocity) {
+                    fling(-velocityX)
+                }
+                //没有触发惯性滑动，矫正刻度
+                else {
+                    correctScale()
+                }
+                //VelocityTracker回收
+                velocityTracker?.recycle()
+                velocityTracker = null
+            }
+        }
+
+
+        return true
     }
 
+    /**
+     * 矫正刻度
+     */
+    private fun correctScale() {
+        //x轴偏移量与间隔区域
+        val remainder = currentScrollX.toInt() % scaleInterval
+        //如果跟指示器未对其
+        if (remainder != 0) {
+            //矫正目标刻度
+            val correctScrollX =
+                if (remainder > (scaleInterval / 2)) {
+                    scaleInterval - remainder
+                } else {
+                    -remainder
+                }
+            scroller.startScroll(currentScrollX.toInt(), 0, correctScrollX, 0)
+        }
+    }
 
     /**
-     * 快速滑动松开后调用
-     * @param downEvent 按下时的事件
-     * @param currentEvent 当前位置的事件
-     * @param distanceX 单位时间内x轴移动速度
-     * @param distanceY 单位时间内y轴移动速度
+     * 惯性滑动
+     * @param vX 单位时间内x轴位移
      */
-    override fun onFling(
-        downEvent: MotionEvent,
-        currentEvent: MotionEvent,
-        distanceX: Float,
-        distanceY: Float
-    ): Boolean {
-
-        //通过OverScroller启动惯性滑动
+    private fun fling(vX: Int) {
         scroller.fling(
             currentScrollX.toInt(), 0,
-            -distanceX.toInt(), 0,
+            vX, 0,
             minScrollX, maxScrollX,
             0, 0
         )
-        return false
-    }
-
-    /**
-     * 滚动。基本与ACTION_MOVE等价
-     * @param downEvent 按下时的事件
-     * @param currentEvent 当前位置的事件
-     * @param distanceX x轴相对于上一次的偏移量
-     * @param distanceY y轴相对于上一次的偏移量
-     */
-    override fun onScroll(
-        downEvent: MotionEvent,
-        currentEvent: MotionEvent,
-        distanceX: Float,
-        distanceY: Float
-    ): Boolean {
-        currentScrollX += distanceX
-        //超出最大滑动范围
-        if (currentScrollX > maxScrollX) {
-            currentScrollX = maxScrollX.toFloat()
-        }
-        //超出最小滑动范围
-        if (currentScrollX < minScrollX) {
-            currentScrollX = minScrollX.toFloat()
-        }
-        scrollTo(currentScrollX.roundToInt(), 0)
-        //已经处于目标位置就不做视图重绘
-        if (currentScrollX.toInt() == maxScrollX || currentScrollX.toInt() == minScrollX) {
-            return false
-        }
-        //刷新视图
-        postInvalidate()
-        return false
+        invalidate()
     }
 
     /**
@@ -222,39 +258,11 @@ class RulerView(context: Context, attrs: AttributeSet) :
             scrollTo(currentScrollX.toInt(), 0)
             //刷新界面
             postInvalidate()
+            //最后一次惯性滑动,进行矫正刻度
+            if (!scroller.computeScrollOffset()) {
+                correctScale()
+            }
         }
         super.computeScroll()
     }
-
-    /**
-     * down事件，并将事件消费
-     */
-    override fun onDown(p0: MotionEvent): Boolean {
-        //停止scroller
-        if (!scroller.isFinished) {
-            scroller.abortAnimation()
-        }
-        //按下时通知父View不要对事件进行拦截
-        parent.requestDisallowInterceptTouchEvent(true)
-        return true
-    }
-
-    /**
-     * 单击。触发onClick
-     */
-    override fun onSingleTapUp(p0: MotionEvent): Boolean {
-        return performClick()
-    }
-
-    /**
-     * 长按
-     */
-    override fun onLongPress(p0: MotionEvent) {}
-
-    /**
-     * Android中预按下方案。关于预按下可自行了解
-     */
-    override fun onShowPress(p0: MotionEvent) {}
-
-
 }

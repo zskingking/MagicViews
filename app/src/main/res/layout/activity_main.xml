@@ -6,7 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <View
+        android:layout_width="2dp"
+        android:layout_height="20dp"
+        android:background="#33BA80"
+        app:layout_constraintBottom_toTopOf="@+id/ruler"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <com.zs.ruler.RulerView
+        android:id="@+id/ruler"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="#33BA80"
