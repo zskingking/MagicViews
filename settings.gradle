@@ -1,0 +1,6 @@
+include ':base'
+include ':tag'
+include ':card'
+include ':ruler'
+include ':app'
+rootProject.name = "MagicViews"
