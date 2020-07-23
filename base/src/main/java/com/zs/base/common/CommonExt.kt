@@ -25,3 +25,44 @@ fun px2dip(context: Context, dpValue: Float): Int {
     return (dpValue / scale + 0.5f).toInt()
 
 }
+
+/**
+ * 获得屏幕宽度,单位dx
+ *
+ * @param context
+ * @return
+ */
+fun getScreenWidthPx(context: Context): Int {
+    return context.resources.displayMetrics.widthPixels
+}
+
+/**
+ * 获得屏幕宽度,单位px
+ *
+ * @param context
+ * @return
+ */
+fun getScreenHeightPx(context: Context): Int {
+    return context.resources.displayMetrics.heightPixels
+}
+
+
+/**
+ * 获得屏幕宽度,单位dp
+ *
+ * @param context
+ * @return
+ */
+fun getScreenWidthDp(context: Context): Int {
+    return px2dip(context, getScreenWidthPx(context).toFloat())
+}
+
+/**
+ * 获得屏幕宽度,单位dp
+ *
+ * @param context
+ * @return
+ */
+fun getScreenHeightDp(context: Context): Int {
+    return px2dip(context, getScreenHeightPx(context).toFloat())
+}
