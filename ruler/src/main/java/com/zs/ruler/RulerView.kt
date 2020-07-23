@@ -2,28 +2,73 @@ package com.zs.ruler
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.util.AttributeSet
-import android.util.Log
-import android.view.*
-import android.widget.OverScroller
+import android.view.View
+import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.zs.base.common.dip2px
-import kotlin.math.abs
-import kotlin.math.roundToInt
+import kotlinx.android.synthetic.main.ruler_layout.view.*
 
 /**
- * des 刻度尺
- * @date 2020/7/22
+ * des 刻度尺,包含一个子View ScaleView。
+ * 没有将指示器跟ScaleView画到一块的原因：ScaleView滑动的是画布，
+ * 指示器会跟着刻度走，就算一直矫正也会左右漂浮不定
+ *
+ * @date 2020/7/23
  * @author zs
  */
-class RulerView(context: Context, attrs: AttributeSet) :
-    View(context, attrs) {
+class RulerView : RelativeLayout {
+
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
+    constructor(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int) :
+            super(context, attributeSet, defStyleAttr) {
+        //获取xml中的属性
+        val array = context.obtainStyledAttributes(attributeSet, R.styleable.RulerView)
+        scaleColor = array.getColor(R.styleable.RulerView_scaleColor, Color.WHITE)
+
+        scaleWidth = array.getDimension(R.styleable.RulerView_scaleWidth,
+            dip2px(context, 1f).toFloat()).toInt()
+
+        scaleHeight = array.getDimension(R.styleable.RulerView_scaleHeight,
+            dip2px(context, 15f).toFloat()).toInt()
+
+        scaleInterval = array.getDimension(R.styleable.RulerView_scaleInterval,
+            dip2px(context, 10f).toFloat()).toInt()
+
+        isRadius = array.getBoolean(R.styleable.RulerView_isRadius, false)
+        maxScale = array.getInteger(R.styleable.RulerView_maxScale, 200)
+        scaleTextSize = array.getInteger(R.styleable.RulerView_scaleTextSize, dip2px(context, 11f))
+        scaleTextColor = array.getColor(R.styleable.RulerView_scaleTextColor, Color.WHITE)
+        indicatorColor = array.getColor(R.styleable.RulerView_indicatorColor, Color.WHITE)
+        //用完回收掉
+        array.recycle()
+        //去除锯齿
+        paint.isAntiAlias = true
+        //指示器颜色
+        paint.color = indicatorColor
+        //选用xml布局
+        View.inflate(context, R.layout.ruler_layout, this)
+        setScaleView()
+    }
 
     /**
-     * 画笔
+     * 设置scaleView属性
      */
-    private val paint by lazy { Paint() }
+    private fun setScaleView() {
+        scaleView.scaleColor = scaleColor
+        scaleView.scaleWidth = scaleWidth
+        scaleView.scaleHeight = scaleHeight
+        scaleView.scaleInterval = scaleInterval
+        scaleView.isRadius = isRadius
+        scaleView.maxScale = maxScale
+        scaleView.scaleTextSize = scaleTextSize
+        scaleView.scaleTextColor = scaleTextColor
+        scaleView.initPaint()
+    }
 
     /**
      * 刻度颜色，默认为白色
@@ -41,14 +86,15 @@ class RulerView(context: Context, attrs: AttributeSet) :
     private var scaleHeight = dip2px(context, 15f)
 
     /**
+     * 刻度间隔。默认10dp
+     */
+    private var scaleInterval = dip2px(context, 10f)
+
+    /**
      * 刻度上方是否是圆角
      */
     private var isRadius = false
 
-    /**
-     * 刻度间隔。默认10dp
-     */
-    private var scaleInterval = dip2px(context, 10f)
 
     /**
      * 刻度数量，默认为200
@@ -56,213 +102,60 @@ class RulerView(context: Context, attrs: AttributeSet) :
     private var maxScale = 200
 
     /**
-     * 速度采集器
+     * 刻度文字大小，默认为12dp
      */
-    private var velocityTracker: VelocityTracker? = null
+    private var scaleTextSize = dip2px(context, 12f)
 
     /**
-     * 最大滑动速度
+     * 刻度文字颜色，默认为白色
      */
-    private val maxVelocity by lazy {
-        ViewConfiguration.get(context)
-            .scaledMaximumFlingVelocity
-    }
+    private var scaleTextColor = ContextCompat.getColor(context, R.color.white)
 
     /**
-     * 最小滑动速度，低于时不滑动
+     * 刻度文字颜色，默认为白色
      */
-    private val minVelocity by lazy {
-        ViewConfiguration.get(context)
-            .scaledMinimumFlingVelocity
-    }
+    private var indicatorColor = ContextCompat.getColor(context, R.color.white)
 
     /**
-     * 滑动帮助类
+     * 指示器X轴坐标
      */
-    private var scroller = OverScroller(context)
+    private var indicatorPointX = 0
 
     /**
-     * 超出最大/最小值允许偏移量
+     * 指示器左右偏移量
      */
-    private var allowOffsetX = 0
+    private var indicatorOffset = dip2px(context, 10f)
 
     /**
-     * 最小滚动距离
+     * 画笔，只用来画指示器
      */
-    private var minScrollX = 0
+    private val paint by lazy { Paint() }
 
     /**
-     * 最大滚动距离
+     * 指示器path
      */
-    private var maxScrollX = 0
-
-    /**
-     * 当前偏移量。不能直接用scrollX，因为scrollX是int类型，会导致精度丢失
-     */
-    private var currentScrollX = 0f
-
-    /**
-     * 初始化
-     */
-    init {
-        //去除锯齿
-        paint.isAntiAlias = true
-        paint.color = scaleColor
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-    }
+    private val path by lazy { Path() }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        //因为指示器在中间，所以最大最小偏移量都为宽度一半
-        allowOffsetX = width / 2
-
-        //最小滚动距离,-刻度数 * 间隔 + width - allowOffsetX
-        minScrollX = -allowOffsetX
-        //最大滚动距离,刻度数 * 间隔 - width + allowOffsetX
-        maxScrollX = maxScale * scaleInterval - width + allowOffsetX
-
+        //中心坐标
+        indicatorPointX = (width / scaleInterval) / 2 * scaleInterval
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        drawScale(canvas)
+        path.moveTo((indicatorPointX - indicatorOffset).toFloat(), 0f)
+        path.lineTo((indicatorPointX + indicatorOffset).toFloat(), 0f)
+        path.lineTo(indicatorPointX.toFloat(), (indicatorOffset * 1.2).toFloat())
+        path.close()
+        canvas.drawPath(path, paint)
     }
 
     /**
-     * 绘制刻度
+     * 添加滚动方法
      */
-    private fun drawScale(canvas: Canvas) {
-        for (index in 0..maxScale) {
-            //每十个刻度又一个粗长刻度
-            if (index % 10 == 0) {
-                paint.strokeWidth = (scaleWidth * 2).toFloat()
-                //当前线段x轴起点
-                val drawX = (index * scaleInterval).toFloat()
-                //高度是普通刻度两倍
-                canvas.drawLine(
-                    drawX, 0f,
-                    drawX, scaleHeight.toFloat() * 2, paint
-                )
-            } else {
-                paint.strokeWidth = scaleWidth.toFloat()
-                //当前线段x轴起点
-                val drawX = (index * scaleInterval).toFloat()
-                canvas.drawLine(
-                    drawX, 0f,
-                    drawX, scaleHeight.toFloat(), paint
-                )
-            }
-        }
+    fun addScrollListener(scrollListener: (Int) -> Unit) {
+        scaleView.addScrollListener(scrollListener)
     }
 
-    /**
-     * 记录上一次move时的坐标，用于计算每次move的差量
-     */
-    private var lastX = 0
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        //开始速度检测,每个事件序列创建一个
-        if (velocityTracker == null) {
-            velocityTracker = VelocityTracker.obtain()
-        }
-        velocityTracker?.addMovement(event)
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                lastX = event.x.toInt()
-                //停止scroller
-                if (!scroller.isFinished) {
-                    scroller.abortAnimation()
-                }
-                //按下时通知父View不要对事件进行拦截
-                parent.requestDisallowInterceptTouchEvent(true)
-            }
-            MotionEvent.ACTION_MOVE -> {
-                currentScrollX -= (event.x - lastX)
-                //超出最大滑动范围
-                if (currentScrollX > maxScrollX) {
-                    currentScrollX = maxScrollX.toFloat()
-                }
-                //超出最小滑动范围
-                if (currentScrollX < minScrollX) {
-                    currentScrollX = minScrollX.toFloat()
-                }
-                scrollTo(currentScrollX.roundToInt(), 0)
-                //记录当前坐标
-                lastX = event.x.toInt()
-                postInvalidate()
-            }
-            MotionEvent.ACTION_UP -> {
-                velocityTracker?.computeCurrentVelocity(1000, maxVelocity.toFloat())
-                val velocityX = velocityTracker!!.xVelocity.toInt()
-                //大于可滑动速度
-                if (abs(velocityX) > minVelocity) {
-                    fling(-velocityX)
-                }
-                //没有触发惯性滑动，矫正刻度
-                else {
-                    correctScale()
-                }
-                //VelocityTracker回收
-                velocityTracker?.recycle()
-                velocityTracker = null
-            }
-        }
-
-
-        return true
-    }
-
-    /**
-     * 矫正刻度
-     */
-    private fun correctScale() {
-        //x轴偏移量与间隔区域
-        val remainder = currentScrollX.toInt() % scaleInterval
-        //如果跟指示器未对其
-        if (remainder != 0) {
-            //矫正目标刻度
-            val correctScrollX =
-                if (remainder > (scaleInterval / 2)) {
-                    scaleInterval - remainder
-                } else {
-                    -remainder
-                }
-            scroller.startScroll(currentScrollX.toInt(), 0, correctScrollX, 0)
-        }
-    }
-
-    /**
-     * 惯性滑动
-     * @param vX 单位时间内x轴位移
-     */
-    private fun fling(vX: Int) {
-        scroller.fling(
-            currentScrollX.toInt(), 0,
-            vX, 0,
-            minScrollX, maxScrollX,
-            0, 0
-        )
-        invalidate()
-    }
-
-    /**
-     * draw内部会调用，专门用户处理滑动。
-     */
-    override fun computeScroll() {
-        //滚动未完成完成，已完成就停止刷新界面
-        if (scroller.computeScrollOffset()) {
-            currentScrollX = scroller.currX.toFloat()
-            //滚动view
-            scrollTo(currentScrollX.toInt(), 0)
-            //刷新界面
-            postInvalidate()
-            //最后一次惯性滑动,进行矫正刻度
-            if (!scroller.computeScrollOffset()) {
-                correctScale()
-            }
-        }
-        super.computeScroll()
-    }
 }

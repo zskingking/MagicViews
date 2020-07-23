@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="RulerView">
+        <!--        刻度颜色-->
+        <attr name="scaleColor" format="color" />
+        <!--        刻度高度-->
+        <attr name="scaleWidth" format="dimension" />
+        <!--        刻度高-->
+        <attr name="scaleHeight" format="dimension" />
+        <!--        刻度间隔-->
+        <attr name="scaleInterval" format="dimension" />
+        <!--        最大刻度-->
+        <attr name="maxScale" format="integer" />
+        <!--        刻度是否为圆角-->
+        <attr name="isRadius" format="boolean" />
+        <!--        刻度文字大小-->
+        <attr name="scaleTextSize" format="integer" />
+        <!--        刻度文字颜色-->
+        <attr name="scaleTextColor" format="color" />
+        <!--        指示器颜色-->
+        <attr name="indicatorColor" format="color" />
+
+        indicator
+    </declare-styleable>
+</resources>
