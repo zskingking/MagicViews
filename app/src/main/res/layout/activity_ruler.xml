@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".ruler.RulerActivity">
+    <TextView
+        android:id="@+id/tvScale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:textColor="#F15555"
+        android:textSize="50dp"
+        android:textStyle="bold"/>
+
+    <com.zs.ruler.RulerView
+        android:id="@+id/ruler"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#494949"
+        app:isRadius="true"
+        app:maxScale="400"
+        app:scaleColor="@color/white"
+        app:scaleInterval="12dp"
+        app:scaleWidth="2dp" />
+</LinearLayout>
