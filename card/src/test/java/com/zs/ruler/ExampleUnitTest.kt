@@ -1,4 +1,4 @@
-package com.zs.card
+package com.zs.ruler
 
 import org.junit.Test
 
