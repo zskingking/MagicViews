@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/base" />
             <option value="$PROJECT_DIR$/card" />
+            <option value="$PROJECT_DIR$/progress" />
             <option value="$PROJECT_DIR$/ruler" />
             <option value="$PROJECT_DIR$/tag" />
           </set>

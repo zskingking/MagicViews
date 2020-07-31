@@ -1,3 +1,4 @@
+include ':progress'
 include ':base'
 include ':tag'
 include ':card'
