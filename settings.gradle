@@ -1,4 +1,5 @@
 include ':progress'
+include ':bebavior'
 include ':base'
 include ':tag'
 include ':card'
