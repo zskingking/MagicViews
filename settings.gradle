@@ -1,3 +1,5 @@
+include ':scala'
+include ':motionlayout'
 include ':progress'
 include ':bebavior'
 include ':base'

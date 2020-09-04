@@ -9,13 +9,14 @@ import kotlinx.android.synthetic.main.activity_ruler.*
  * @author zs
  * @data 2020/7/25
  */
-class RulerActivity:AppCompatActivity() {
+class RulerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ruler)
         ruler.addScrollListener {
-            tvScale.text = String.format("体重 %s 吨",it)
+            val scale = if (it < 0) 0 else it
+            tvScale.text = String.format("体重 %s 吨", scale)
         }
     }
 }

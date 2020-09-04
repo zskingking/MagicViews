@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="70dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:id="@+id/tvTitle"
         android:textColor="#333333"
-        android:textSize="16sp"
+        android:textSize="30dp"
         tools:text="title"
+        android:textStyle="bold"
         android:gravity="center"/>
 </LinearLayout>

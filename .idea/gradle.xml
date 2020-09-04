@@ -15,8 +15,10 @@
             <option value="$PROJECT_DIR$/base" />
             <option value="$PROJECT_DIR$/bebavior" />
             <option value="$PROJECT_DIR$/card" />
+            <option value="$PROJECT_DIR$/motionlayout" />
             <option value="$PROJECT_DIR$/progress" />
             <option value="$PROJECT_DIR$/ruler" />
+            <option value="$PROJECT_DIR$/scala" />
             <option value="$PROJECT_DIR$/tag" />
           </set>
         </option>

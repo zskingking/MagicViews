@@ -192,7 +192,12 @@ class ScaleView : View {
                     drawX, scaleHeight.toFloat() * 2, paint
                 )
                 //绘制文字
-                canvas.drawText("$index", drawX-scaleTextSize/2, scaleHeight.toFloat() * 3, paint)
+                canvas.drawText(
+                    "$index",
+                    drawX - scaleTextSize / 2,
+                    scaleHeight.toFloat() * 3,
+                    paint
+                )
             } else {
                 paint.strokeWidth = scaleWidth.toFloat()
                 //当前线段x轴起点
@@ -288,7 +293,8 @@ class ScaleView : View {
             currentScrollX.toInt(), 0,
             vX, 0,
             minScrollX, maxScrollX,
-            0, 0
+            0, 0,
+            140, 140
         )
         invalidate()
     }

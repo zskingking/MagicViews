@@ -12,7 +12,8 @@ class MainActivity : AppCompatActivity() {
         val list = mutableListOf<String>()
         list.add("ruler")
         list.add("tag")
-        list.add("card")
+        list.add("MotionLayout")
+        list.add("ScalaView")
         MainAdapter().apply {
             setNewData(list)
             recyclerView.adapter = this

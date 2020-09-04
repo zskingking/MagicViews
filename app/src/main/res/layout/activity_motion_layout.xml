@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".motion.MotionLayoutActivity">
+
+
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motionLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#7E7AECFF"
+        app:layoutDescription="@xml/scene_01"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvTitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:text="MotionLayout1"
+            android:textColor="#111111"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivHeart"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="120dp"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/heart"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/btn2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/red_radius_25"
+            android:elevation="1dp"
+            android:gravity="center"
+            android:text="B"
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/btn1"
+            app:layout_constraintRight_toRightOf="@+id/btn1" />
+
+        <TextView
+            android:id="@+id/btn3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/gree_radius_25"
+            android:elevation="1dp"
+            android:gravity="center"
+            android:text="C"
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/btn1"
+            app:layout_constraintRight_toLeftOf="@+id/btn1" />
+
+        <TextView
+            android:id="@+id/btn4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/yellow_radius_25"
+            android:elevation="1dp"
+            android:gravity="center"
+            android:text="D"
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/btn1"
+            app:layout_constraintRight_toLeftOf="@+id/btn1" />
+
+        <TextView
+            android:id="@+id/btn1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/blue_radius_25"
+            android:elevation="1dp"
+            android:gravity="center"
+            android:text="A"
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motionLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#7EE4F89D"
+        app:layoutDescription="@xml/scene_02"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.5">
+
+        <TextView
+            android:id="@+id/tvTitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:text="MotionLayout2"
+            android:textColor="#111111"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSong"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:textSize="15sp"
+            android:textColor="#E66D57"
+            android:textStyle="bold"
+            android:text="当秋天洒下最后一把枫叶时 正是我要离开的时候 看着收拾好的行李 想起远方的你 心里竟然有一股 幸福的感觉 就在这个时候 地上的枫叶 刹那间 飞起来 飞过来 飞进我 深深心怀 越过那 宁静海 充满着 回忆的海"/>
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="80dp"
+            android:layout_height="20dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/time_bg"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="#ffffff"
+            android:textSize="15sp" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="50dp"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

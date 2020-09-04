@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@+id/start"
+        motion:duration="1000"
+        motion:motionInterpolator="bounce">
+        <!--关键帧。当进度进行到一半时，位置在高度的0.4处-->
+        <KeyFrameSet>
+            <KeyPosition
+                motion:keyPositionType="parentRelative"
+                motion:percentY="0.40"
+                motion:framePosition="50"
+                motion:motionTarget="@+id/tv"/>
+        </KeyFrameSet>
+        <!--关键帧。当进度进行到一半时，旋转90度-->
+        <KeyFrameSet>
+            <KeyAttribute
+                motion:keyPositionType="parentRelative"
+                android:rotation="360"
+                android:scaleX="2"
+                android:scaleY="2"
+                motion:framePosition="50"
+                motion:motionTarget="@+id/tv"/>
+        </KeyFrameSet>
+    <!--向左拖动出发过度动画-->
+        <OnSwipe
+            motion:dragDirection="dragRight"
+            motion:touchAnchorId="@+id/tv"
+            motion:touchAnchorSide="left" />
+    </Transition>
+    <!--开始-->
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/tv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="100dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent">
+            <CustomAttribute
+                motion:attributeName="backgroundColor"
+                motion:customColorValue="#D81B60" />
+        </Constraint>
+    </ConstraintSet>
+    <!--结束-->
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/tv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="100dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent">
+            <CustomAttribute
+                motion:attributeName="backgroundColor"
+                motion:customColorValue="#9999FF" />
+        </Constraint>
+    </ConstraintSet>
+
+</MotionScene>
+

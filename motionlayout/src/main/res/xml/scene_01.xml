@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@+id/start"
+        motion:duration="300"
+        motion:motionInterpolator="linear">
+
+        <!--点击打开-->
+        <OnClick motion:targetId="@+id/btn1"
+            motion:clickAction="toggle"/>
+
+    </Transition>
+
+    <!--开始-->
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/ivHeart"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"/>
+        <Constraint
+            android:id="@+id/btn2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"/>
+        <Constraint
+            android:id="@+id/btn3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"/>
+        <Constraint
+            android:id="@+id/btn4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            motion:layout_constraintRight_toRightOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"/>
+    </ConstraintSet>
+
+    <!--结束-->
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/ivHeart"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="120dp"/>
+        <Constraint
+            android:id="@+id/btn2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="40dp"
+            motion:layout_constraintRight_toRightOf="@+id/btn1"
+            motion:layout_constraintBottom_toTopOf="@+id/btn1"/>
+        <Constraint
+            android:id="@+id/btn3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            motion:layout_constraintRight_toLeftOf="@+id/btn1"
+            motion:layout_constraintBottom_toTopOf="@+id/btn1"/>
+        <Constraint
+            android:id="@+id/btn4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="40dp"
+            motion:layout_constraintRight_toLeftOf="@+id/btn1"
+            motion:layout_constraintTop_toTopOf="@+id/btn1"/>
+    </ConstraintSet>
+
+
+</MotionScene>
+
