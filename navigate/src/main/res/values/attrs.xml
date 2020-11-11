@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="NavigateView">
+        <!--        分割线颜色-->
+        <attr name="lineColor" format="color" />
+        <!--        分割线高度-->
+        <attr name="lineHeight" format="dimension" />
+        <!--        tab文字大小-->
+        <attr name="tabTextSize" format="dimension" />
+        <!--        tab选中文字颜色-->
+        <attr name="selectTextColor" format="color" />
+        <!--        tab默认文字颜色-->
+        <attr name="normalTextColor" format="color" />
+
+    </declare-styleable>
+</resources>

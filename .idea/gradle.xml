@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/bebavior" />
             <option value="$PROJECT_DIR$/card" />
             <option value="$PROJECT_DIR$/motionlayout" />
+            <option value="$PROJECT_DIR$/navigate" />
             <option value="$PROJECT_DIR$/progress" />
             <option value="$PROJECT_DIR$/ruler" />
             <option value="$PROJECT_DIR$/scala" />
@@ -23,6 +24,7 @@
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
+        <option name="useQualifiedModuleNames" value="true" />
       </GradleProjectSettings>
     </option>
   </component>

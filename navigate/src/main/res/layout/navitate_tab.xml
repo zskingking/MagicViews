@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ivIcon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvTabText"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintHeight_percent="0.45"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/spaceCenter" />
+
+    <TextView
+        android:id="@+id/tvTabText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/spaceCenter"
+        app:layout_constraintLeft_toLeftOf="@+id/ivIcon"
+        app:layout_constraintRight_toRightOf="@+id/ivIcon"
+        app:layout_constraintTop_toBottomOf="@+id/ivIcon"
+        android:layout_marginTop="3dp"/>
+
+    <Space
+        android:id="@+id/spaceCenter"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Space
+        android:id="@+id/spaceMsg"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="3dp"
+        app:layout_constraintRight_toRightOf="@+id/ivIcon"
+        app:layout_constraintTop_toTopOf="@+id/ivIcon" />
+
+    <View
+        android:id="@+id/vMsg"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:background="@drawable/red_radius_10"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/spaceMsg"
+        app:layout_constraintLeft_toLeftOf="@+id/spaceMsg"
+        app:layout_constraintRight_toRightOf="@+id/spaceMsg"
+        app:layout_constraintTop_toTopOf="@+id/spaceMsg" />
+
+    <TextView
+        android:id="@+id/tvMsgNumber"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/red_radius_10"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/spaceMsg"
+        app:layout_constraintLeft_toLeftOf="@+id/spaceMsg"
+        app:layout_constraintRight_toRightOf="@+id/spaceMsg"
+        app:layout_constraintTop_toTopOf="@+id/spaceMsg" />
+</androidx.constraintlayout.widget.ConstraintLayout>

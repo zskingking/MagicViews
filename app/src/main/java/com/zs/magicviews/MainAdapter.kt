@@ -5,6 +5,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zs.magicviews.card.CardActivity
 import com.zs.magicviews.motion.MotionLayoutActivity
+import com.zs.magicviews.nav.NavActivity
 import com.zs.magicviews.ruler.RulerActivity
 import com.zs.magicviews.scala.ScalaActivity
 import com.zs.magicviews.tag.TagActivity
@@ -23,6 +24,7 @@ class MainAdapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_layou
                 1 -> context.startActivity(Intent(context, TagActivity::class.java))
                 2 -> context.startActivity(Intent(context, MotionLayoutActivity::class.java))
                 3 -> context.startActivity(Intent(context, ScalaActivity::class.java))
+                4 -> context.startActivity(Intent(context, NavActivity::class.java))
             }
         }
     }

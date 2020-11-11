@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".scala.ScalaActivity"></activity>
+        <activity android:name=".nav.NavActivity"/>
+        <activity android:name=".scala.ScalaActivity"/>
         <activity android:name=".motion.MotionLayoutActivity" />
         <activity android:name=".card.CardActivity" />
         <activity android:name=".MainActivity">

@@ -1,3 +1,4 @@
+include ':navigate'
 include ':scala'
 include ':motionlayout'
 include ':progress'

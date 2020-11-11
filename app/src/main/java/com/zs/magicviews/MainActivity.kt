@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
         list.add("tag")
         list.add("MotionLayout")
         list.add("ScalaView")
+        list.add("Navigate")
         MainAdapter().apply {
             setNewData(list)
             recyclerView.adapter = this

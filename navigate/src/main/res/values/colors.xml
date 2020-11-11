@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+
+    <color name="selectTabColor">#333333</color>
+    <color name="normalTabColor">#999999</color>
+    <color name="lineColor">#D5D5D5</color>
+
+</resources>
